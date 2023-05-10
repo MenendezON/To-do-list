@@ -37,5 +37,14 @@
     "express": "^4.18.2",
     "lodash": "^4.17.21",
     "webpack-dev-middleware": "^6.1.0"
-  }
+  },
+  "main": "server.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MenendezON/To-do-list.git"
+  },
+  "bugs": {
+    "url": "https://github.com/MenendezON/To-do-list/issues"
+  },
+  "homepage": "https://github.com/MenendezON/To-do-list#readme"
 }
