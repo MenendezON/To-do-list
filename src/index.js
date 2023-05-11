@@ -1,28 +1,9 @@
 import './style.css';
 import Icon from './option.png';
+import { msg } from './func.js';
 
-const tasks = [
-  {
-    description: 'Create a new repository',
-    completed: false,
-    index: 0,
-  },
-  {
-    description: 'Create a local webpack project',
-    completed: true,
-    index: 1,
-  },
-  {
-    description: 'Checkout the linters',
-    completed: true,
-    index: 2,
-  },
-  {
-    description: 'Push your project on Github',
-    completed: false,
-    index: 3,
-  },
-];
+let tasks = [];
+const main = document.querySelector('.container');
 
 const showTask = (i) => {
   const li = document.createElement('li');
@@ -40,22 +21,42 @@ const showTask = (i) => {
   const myIcon = new Image();
   myIcon.src = Icon;
   myIcon.setAttribute('alt', ' ');
+  myIcon.classList.add('delete');
+  myIcon.addEventListener('click', (index) => {
+    removeTask(index);
+  });
   li.appendChild(myIcon);
   return li;
 };
 
-function component() {
-  const main = document.querySelector('.container');
+const removeTask=(i)=>{
+  console.log(i);
+}
 
+function component() {
   const h1 = document.createElement('h1');
   h1.textContent = 'To-do list';
   main.appendChild(h1);
 
+  const form = document.createElement('form');
+  form.setAttribute('action', '#');
+  form.setAttribute('id', 'taskForm');
+  parent.addEventListener('submit', validateForm);
+
   const inputText = document.createElement('input');
   inputText.setAttribute('type', 'text');
   inputText.setAttribute('placeholder', 'Add to your list...');
+  inputText.setAttribute('value', 'new task');
   inputText.setAttribute('id', 'newTask');
-  main.appendChild(inputText);
+
+  const inputSubmit = document.createElement('input');
+  inputSubmit.setAttribute('type', 'submit');
+  inputSubmit.setAttribute('value', '>');
+
+  form.appendChild(inputText);
+  form.appendChild(inputSubmit);
+
+  main.appendChild(form);
 
   tasks.forEach((tsk, i) => {
     if (i >= 0) showTask(i);
@@ -77,4 +78,28 @@ function component() {
   return main;
 }
 
-document.body.appendChild(component());
+window.addEventListener('DOMContentLoaded', () => {
+  tasks = JSON.parse(localStorage.getItem('datas')) ?? [];
+  document.body.appendChild(component());
+});
+
+const validateForm = (event) => {
+  event.preventDefault();
+  const task = document.getElementById('newTask');
+  if (task && task.value !== '') {
+    const newTask = {
+      description: task && task.value,
+      completed: false,
+      index: tasks.length,
+    };
+    task.value = '';
+
+    tasks.push(newTask);
+    localStorage.setItem('datas', JSON.stringify(tasks));
+    main.innerHTML = '';
+    document.body.appendChild(component());
+    return false;
+  }
+  return true;
+};
+
