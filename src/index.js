@@ -1,9 +1,16 @@
 import './style.css';
 import Icon from './option.png';
-import { msg } from './func.js';
+import { validateForm } from './func.js';
+import { removeTask } from './func.js';
 
 let tasks = [];
-const main = document.querySelector('.container');
+export const main = document.querySelector('.container');
+
+export let dataLoading = () => {
+  tasks = JSON.parse(localStorage.getItem('datas')) ?? [];
+  main.innerHTML = '';
+  document.body.appendChild(component());
+}
 
 const showTask = (i) => {
   const li = document.createElement('li');
@@ -22,18 +29,15 @@ const showTask = (i) => {
   myIcon.src = Icon;
   myIcon.setAttribute('alt', ' ');
   myIcon.classList.add('delete');
-  myIcon.addEventListener('click', (index) => {
-    removeTask(index);
+  myIcon.addEventListener('click', () => {
+    removeTask(i);  
+    dataLoading();
   });
   li.appendChild(myIcon);
   return li;
 };
 
-const removeTask=(i)=>{
-  console.log(i);
-}
-
-function component() {
+export function component() {
   const h1 = document.createElement('h1');
   h1.textContent = 'To-do list';
   main.appendChild(h1);
@@ -41,7 +45,7 @@ function component() {
   const form = document.createElement('form');
   form.setAttribute('action', '#');
   form.setAttribute('id', 'taskForm');
-  parent.addEventListener('submit', validateForm);
+  form.addEventListener('submit', validateForm);
 
   const inputText = document.createElement('input');
   inputText.setAttribute('type', 'text');
@@ -80,26 +84,5 @@ function component() {
 
 window.addEventListener('DOMContentLoaded', () => {
   tasks = JSON.parse(localStorage.getItem('datas')) ?? [];
-  document.body.appendChild(component());
+  dataLoading();
 });
-
-const validateForm = (event) => {
-  event.preventDefault();
-  const task = document.getElementById('newTask');
-  if (task && task.value !== '') {
-    const newTask = {
-      description: task && task.value,
-      completed: false,
-      index: tasks.length,
-    };
-    task.value = '';
-
-    tasks.push(newTask);
-    localStorage.setItem('datas', JSON.stringify(tasks));
-    main.innerHTML = '';
-    document.body.appendChild(component());
-    return false;
-  }
-  return true;
-};
-
